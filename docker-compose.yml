@@ -2,23 +2,12 @@
 version: '3.8'
 #Bloque de servicios, indica los contenedores a utilizar.
 services:
-  lets-haproxy:
-    image: achetronic/lets-haproxy:latest
-    container_name: lets-haproxy
-    restart: always
-    stdin_open: true
-    tty: true
-    environment:
-      ENVIRONMENT: "staging"
-      ADMIN_MAIL: "radf0001@ce.pucmm.edu.do"
-      SKIP_CREATION: "false"
+  elb:
+    image: haproxy
     ports:
-      - "80:80"
-      - "443:443"
+      - "8100:8100"
     volumes:
-      - ./haproxy.cfg:/root/templates/haproxy.user.cfg:ro
-      - letsencrypt_logs:/var/log/letsencrypt
-      - letsencrypt_data:/etc/letsencrypt
+      - ./haproxy.cfg:/usr/local/etc/haproxy
     links:
       - app-web1
       - app-web2
@@ -36,8 +25,6 @@ services:
     # Incluyendo la opción de reiniciar el contenedor en caso existir algún problema, la primera vez puede ocurrir
     # que la base de datos aún no esté inicializada.
     restart: always
-    tty: true
-    stdin_open: true
     networks:    #red para conectar los equipos.
       - red-app
     depends_on:   #indica que primero debe subir los servicios indicados.
@@ -54,7 +41,6 @@ services:
     # Incluyendo la opción de reiniciar el contenedor en caso existir algún problema, la primera vez puede ocurrir
     # que la base de datos aún no esté inicializada.
     restart: always
-    tty: true
     networks: #red para conectar los equipos.
       - red-app
     depends_on: #indica que primero debe subir los servicios indicados.
@@ -114,7 +100,3 @@ networks:  #bloque para las redes
 
 volumes: #Bloque para definir los volumenes
   mi-volumen-bd:
-  letsencrypt_logs:
-    name: letsencrypt_logs
-  letsencrypt_data:
-    name: letsencrypt_data
