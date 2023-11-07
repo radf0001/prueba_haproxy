@@ -7,7 +7,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./haproxy.cfg:/usr/local/etc/haproxy
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
     links:
       - app-web1
       - app-web2
