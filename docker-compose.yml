@@ -11,19 +11,22 @@ services:
     links:
       - app-web1
       - app-web2
-      - app-web3
-    networks: #red para conectar los equipos.
+    networks:
       - red-app
+    depends_on: #indica que primero debe subir los servicios indicados.
+      base-datos-app-web:
+        condition: service_healthy
 
   app-web1:       #nombre del servicio
-    image: radf0001/practica-6-app-web #imagen utilizada si viene del registro.
+    #    build: ./practica-4
+    image: radf0001/practica-6-app-web:latest
     env_file: #Indica el parametro para
       - .env
     environment:    #variable de ambiente
       - NOMBRE_APP=$AMBIENTE
-      - server.port=8081
-    # Incluyendo la opción de reiniciar el contenedor en caso existir algún problema, la primera vez puede ocurrir
-    # que la base de datos aún no esté inicializada.
+      - server.port=8080
+    expose:
+      - 8080
     restart: always
     networks:    #red para conectar los equipos.
       - red-app
@@ -32,14 +35,15 @@ services:
         condition: service_healthy
 
   app-web2: #nombre del servicio
-    image: radf0001/practica-6-app-web #imagen utilizada si viene del registro.
+    #    build: ./practica-4
+    image: radf0001/practica-6-app-web:latest
     env_file: #Indica el parametro para
       - .env
     environment: #variable de ambiente
       - NOMBRE_APP=$AMBIENTE
-      - server.port=8082
-    # Incluyendo la opción de reiniciar el contenedor en caso existir algún problema, la primera vez puede ocurrir
-    # que la base de datos aún no esté inicializada.
+      - server.port=8081
+    expose:
+      - 8081
     restart: always
     networks: #red para conectar los equipos.
       - red-app
@@ -48,14 +52,15 @@ services:
         condition: service_healthy
 
   app-web3: #nombre del servicio
-    image: radf0001/practica-6-app-web #imagen utilizada si viene del registro.
+#    build: ./practica-4
+    image: radf0001/practica-6-app-web:latest
     env_file: #Indica el parametro para
       - .env
     environment: #variable de ambiente
       - NOMBRE_APP=$AMBIENTE
-      - server.port=8083
-    # Incluyendo la opción de reiniciar el contenedor en caso existir algún problema, la primera vez puede ocurrir
-    # que la base de datos aún no esté inicializada.
+      - server.port=8082
+    expose:
+      - 8082
     restart: always
     networks: #red para conectar los equipos.
       - red-app
@@ -78,22 +83,9 @@ services:
     networks:
       - red-app
     healthcheck:
-      test: ["CMD", 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'db', '-p$$MYSQL_ROOT_PASSWORD' ]
+      test: [ "CMD", 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'db', '-p$$MYSQL_ROOT_PASSWORD' ]
       timeout: 5s
       retries: 5
-
-  phpmyadmin: # Cliente phpmyadmin para
-    image: phpmyadmin:5.1.1
-    env_file:
-      - .env
-    ports:
-      - ${PUERTO_PHPMYADMIN}:80
-    environment:
-      - PMA_ARBITRARY=1
-    networks:
-      - red-app
-    depends_on: #indica que primero debe subir los servicios indicados.
-      - base-datos-app-web
 
 networks:  #bloque para las redes
   red-app:   #indicando la red definida
