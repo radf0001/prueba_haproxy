@@ -11,7 +11,7 @@ services:
     links:
       - app-web1
       - app-web2
-#      - app-web3
+      - app-web3
     networks:
       - red-app
     depends_on: #indica que primero debe subir los servicios indicados.
@@ -35,39 +35,39 @@ services:
       base-datos-app-web:
         condition: service_healthy
 
- app-web2: #nombre del servicio
-   #    build: ./practica-4
-   image: radf0001/practica-6-app-web:latest
-   env_file: #Indica el parametro para
-     - .env
-   environment: #variable de ambiente
-     - NOMBRE_APP=$AMBIENTE
-     - server.port=8081
-   expose:
-     - 8081
-   restart: always
-   networks: #red para conectar los equipos.
-     - red-app
-   depends_on: #indica que primero debe subir los servicios indicados.
-     base-datos-app-web:
-       condition: service_healthy
+  app-web2: #nombre del servicio
+    #    build: ./practica-4
+    image: radf0001/practica-6-app-web:latest
+    env_file: #Indica el parametro para
+      - .env
+    environment: #variable de ambiente
+      - NOMBRE_APP=$AMBIENTE
+      - server.port=8081
+    expose:
+      - 8081
+    restart: always
+    networks: #red para conectar los equipos.
+      - red-app
+    depends_on: #indica que primero debe subir los servicios indicados.
+      base-datos-app-web:
+        condition: service_healthy
 
-#  app-web3: #nombre del servicio
-# #    build: ./practica-4
-#    image: radf0001/practica-6-app-web:latest
-#    env_file: #Indica el parametro para
-#      - .env
-#    environment: #variable de ambiente
-#      - NOMBRE_APP=$AMBIENTE
-#      - server.port=8082
-#    expose:
-#      - 8082
-#    restart: always
-#    networks: #red para conectar los equipos.
-#      - red-app
-#    depends_on: #indica que primero debe subir los servicios indicados.
-#      base-datos-app-web:
-#        condition: service_healthy
+  app-web3: #nombre del servicio
+#    build: ./practica-4
+    image: radf0001/practica-6-app-web:latest
+    env_file: #Indica el parametro para
+      - .env
+    environment: #variable de ambiente
+      - NOMBRE_APP=$AMBIENTE
+      - server.port=8082
+    expose:
+      - 8082
+    restart: always
+    networks: #red para conectar los equipos.
+      - red-app
+    depends_on: #indica que primero debe subir los servicios indicados.
+      base-datos-app-web:
+        condition: service_healthy
 
   base-datos-app-web:
     image: mysql:5.7.26
