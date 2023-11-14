@@ -35,24 +35,7 @@ services:
     depends_on: #indica que primero debe subir los servicios indicados.
       base-datos-app-web:
         condition: service_healthy
-
-  webc: #nombre del servicio
-#    build: ./practica-4
-    image: radf0001/practica-6-app-web:latest
-    env_file: #Indica el parametro para
-      - .env
-    environment: #variable de ambiente
-      - NOMBRE_APP=$AMBIENTE
-      - server.port=8082
-    expose:
-      - 8082
-    restart: always
-    networks: #red para conectar los equipos.
-      - red-app
-    depends_on: #indica que primero debe subir los servicios indicados.
-      base-datos-app-web:
-        condition: service_healthy
-
+        
   base-datos-app-web:
     image: mysql:5.7.26
     ports:
@@ -73,10 +56,12 @@ services:
       retries: 5
 
   haproxy:
-    image: haproxy:2.7
+    environment:
+      - CERT1=elb.playdomtv.me
+      - EMAIL=radf0001@ce.pucmm.edu.do
+      - STAGING=false
     volumes:
-      - ./haproxy:/haproxy-override
-      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - ./haproxy/haproxy.cfg:/etc/haproxy/haproxy.cfg
     links:
       - weba
       - webb
@@ -84,7 +69,9 @@ services:
     networks:
       - red-app
     ports:
-      - "80:80"
+      - '80:80'
+      - '443:443'
+    image: 'ghcr.io/tomdess/docker-haproxy-certbot:master'
 
 networks:  #bloque para las redes
   red-app:   #indicando la red definida
