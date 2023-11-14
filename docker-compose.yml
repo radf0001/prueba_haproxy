@@ -5,7 +5,8 @@ services:
   elb:
     image: haproxy
     ports:
-      - "8100:8100"
+      - "80:80"
+      - "70:70"
     volumes:
       - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
     links:
