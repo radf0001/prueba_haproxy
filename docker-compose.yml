@@ -84,8 +84,8 @@ services:
     networks:
       - red-app
     ports:
-      - "80:80"
-      - "70:70" # haproxy admin console, login with user:pass
+      - "8100:8100"
+      - "8084:8084" # haproxy admin console, login with user:pass
 
 networks:  #bloque para las redes
   red-app:   #indicando la red definida
