@@ -26,9 +26,9 @@ services:
       - .env
     environment: #variable de ambiente
       - NOMBRE_APP=$AMBIENTE
-      - server.port=8081
+      - server.port=8080
     expose:
-      - 8081
+      - 8080
     restart: always
     networks: #red para conectar los equipos.
       - red-app
@@ -43,9 +43,9 @@ services:
       - .env
     environment: #variable de ambiente
       - NOMBRE_APP=$AMBIENTE
-      - server.port=8082
+      - server.port=8080
     expose:
-      - 8082
+      - 8080
     restart: always
     networks: #red para conectar los equipos.
       - red-app
