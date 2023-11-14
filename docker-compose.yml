@@ -65,7 +65,6 @@ services:
     links:
       - weba
       - webb
-      - webc
     networks:
       - red-app
     ports:
