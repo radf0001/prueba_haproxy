@@ -1,25 +1,8 @@
 #indica la version de Docker Compose utilizada
-version: '3.8'
+version: '3.9'
 #Bloque de servicios, indica los contenedores a utilizar.
 services:
-  elb:
-    image: haproxy
-    ports:
-      - "80:80"
-      - "70:70"
-    volumes:
-      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
-    links:
-      - app-web1
-      - app-web2
-#      - app-web3
-    networks:
-      - red-app
-    depends_on: #indica que primero debe subir los servicios indicados.
-      base-datos-app-web:
-        condition: service_healthy
-
-  app-web1:       #nombre del servicio
+  weba:       #nombre del servicio
     #    build: ./practica-4
     image: radf0001/practica-6-app-web:latest
     env_file: #Indica el parametro para
@@ -36,7 +19,7 @@ services:
       base-datos-app-web:
         condition: service_healthy
 
-  app-web2: #nombre del servicio
+  webb: #nombre del servicio
     #    build: ./practica-4
     image: radf0001/practica-6-app-web:latest
     env_file: #Indica el parametro para
@@ -53,22 +36,22 @@ services:
       base-datos-app-web:
         condition: service_healthy
 
-#  app-web3: #nombre del servicio
-##    build: ./practica-4
-#    image: radf0001/practica-6-app-web:latest
-#    env_file: #Indica el parametro para
-#      - .env
-#    environment: #variable de ambiente
-#      - NOMBRE_APP=$AMBIENTE
-#      - server.port=8082
-#    expose:
-#      - 8082
-#    restart: always
-#    networks: #red para conectar los equipos.
-#      - red-app
-#    depends_on: #indica que primero debe subir los servicios indicados.
-#      base-datos-app-web:
-#        condition: service_healthy
+  webc: #nombre del servicio
+#    build: ./practica-4
+    image: radf0001/practica-6-app-web:latest
+    env_file: #Indica el parametro para
+      - .env
+    environment: #variable de ambiente
+      - NOMBRE_APP=$AMBIENTE
+      - server.port=8082
+    expose:
+      - 8082
+    restart: always
+    networks: #red para conectar los equipos.
+      - red-app
+    depends_on: #indica que primero debe subir los servicios indicados.
+      base-datos-app-web:
+        condition: service_healthy
 
   base-datos-app-web:
     image: mysql:5.7.26
@@ -88,6 +71,21 @@ services:
       test: [ "CMD", 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'db', '-p$$MYSQL_ROOT_PASSWORD' ]
       timeout: 5s
       retries: 5
+
+  haproxy:
+    image: haproxy:2.7
+    volumes:
+      - ./haproxy:/haproxy-override
+      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    links:
+      - weba
+      - webb
+      - webc
+    networks:
+      - red-app
+    ports:
+      - "80:80"
+      - "70:70" # haproxy admin console, login with user:pass
 
 networks:  #bloque para las redes
   red-app:   #indicando la red definida
