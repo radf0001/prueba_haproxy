@@ -57,7 +57,7 @@ services:
 
   haproxy:
     environment:
-      - CERT1=elb.playdomtv.me
+      - CERT1=aws.playdomtv.me
       - EMAIL=radf0001@ce.pucmm.edu.do
       - STAGING=false
     volumes:
