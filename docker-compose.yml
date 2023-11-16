@@ -35,6 +35,23 @@ services:
     depends_on: #indica que primero debe subir los servicios indicados.
       base-datos-app-web:
         condition: service_healthy
+
+  webc: #nombre del servicio
+    #    build: ./practica-4
+    image: radf0001/practica-6-app-web:latest
+    env_file: #Indica el parametro para
+      - .env
+    environment: #variable de ambiente
+      - NOMBRE_APP=$AMBIENTE
+      - server.port=8082
+    expose:
+      - 8082
+    restart: always
+    networks: #red para conectar los equipos.
+      - red-app
+    depends_on: #indica que primero debe subir los servicios indicados.
+      base-datos-app-web:
+        condition: service_healthy
         
   base-datos-app-web:
     image: mysql:5.6.45
@@ -65,6 +82,7 @@ services:
     links:
       - weba
       - webb
+      - webc
     networks:
       - red-app
     ports:
